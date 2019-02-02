@@ -11,8 +11,6 @@ import java.nio.file.Paths;
 import java.time.Month;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 public class BankTransactionAnalyzerSimple {
 
     public static final String RESOURCES = "bank.csv";
@@ -23,20 +21,23 @@ public class BankTransactionAnalyzerSimple {
         List<String> lines = Files.readAllLines(path);
 
         List<BankTransaction> bankTransactions = bankStatementCSVParser.parseLinesFromCSV(lines);
+        BankStatementProcessor bankStatementProcessor = new BankStatementProcessor(bankTransactions);
 
-        System.out.println("The total for all transactions is " + calculateTotalAmount(bankTransactions));
-        System.out.println("Transactions in January " + selectInMonth(bankTransactions, Month.JANUARY));
-
+        collectSummary(bankStatementProcessor);
     }
 
-    private static double calculateTotalAmount(List<BankTransaction> bankTransactions) {
-        return bankTransactions.stream().mapToDouble(BankTransaction::getAmount).sum();
-    }
+    private static void collectSummary(BankStatementProcessor bankStatementProcessor) {
+        System.out.println("The total for all transactions is "
+                + bankStatementProcessor.calculateTotalAmount());
 
-    private static List<BankTransaction> selectInMonth(List<BankTransaction> bankTransactions, Month month) {
-        return bankTransactions.stream()
-                .filter(bankTransaction -> month == bankTransaction.getDate().getMonth())
-                .collect(toList());
+        System.out.println("The total for transactions in January is "
+                + bankStatementProcessor.calculateTotalInMonth(Month.JANUARY));
+
+        System.out.println("The total for transactions in February is "
+                + bankStatementProcessor.calculateTotalInMonth(Month.FEBRUARY));
+
+        System.out.println("The total salary received is "
+                + bankStatementProcessor.calculateTotalForCategory("Salary"));
     }
 
 }
