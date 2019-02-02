@@ -1,4 +1,4 @@
-package com.monsterend;
+package com.monsterend.processor;
 
 import com.monsterend.domain.BankTransaction;
 

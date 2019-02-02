@@ -1,7 +1,10 @@
-package com.monsterend;
+package com.monsterend.analyzer;
 
 
 import com.monsterend.domain.BankTransaction;
+import com.monsterend.parser.BankStatementCSVParser;
+import com.monsterend.parser.BankStatementParser;
+import com.monsterend.processor.BankStatementProcessor;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -11,16 +14,15 @@ import java.nio.file.Paths;
 import java.time.Month;
 import java.util.List;
 
-public class BankTransactionAnalyzerSimple {
+public class BankTransactionAnalyzer {
 
     public static final String RESOURCES = "bank.csv";
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
-        BankStatementCSVParser bankStatementCSVParser = new BankStatementCSVParser();
+    public void analyze(BankStatementParser bankStatementParser) throws IOException, URISyntaxException {
         Path path = Paths.get(ClassLoader.getSystemResource(RESOURCES).toURI());
         List<String> lines = Files.readAllLines(path);
 
-        List<BankTransaction> bankTransactions = bankStatementCSVParser.parseLinesFromCSV(lines);
+        List<BankTransaction> bankTransactions = bankStatementParser.parseLinesFrom(lines);
         BankStatementProcessor bankStatementProcessor = new BankStatementProcessor(bankTransactions);
 
         collectSummary(bankStatementProcessor);

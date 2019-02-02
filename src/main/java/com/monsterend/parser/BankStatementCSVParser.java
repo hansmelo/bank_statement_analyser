@@ -1,4 +1,4 @@
-package com.monsterend;
+package com.monsterend.parser;
 
 import com.monsterend.domain.BankTransaction;
 
@@ -7,11 +7,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import static java.util.stream.Collectors.toList;
 
-public class BankStatementCSVParser {
+public class BankStatementCSVParser implements BankStatementParser {
 
     private static final DateTimeFormatter DATE_PATTERN = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-    private BankTransaction parserFromCSV(String line) {
+    @Override
+    public BankTransaction parseFrom(String line) {
         String[] columns = line.split(",");
 
         LocalDate date = LocalDate.parse(columns[0], DATE_PATTERN);
@@ -21,9 +22,10 @@ public class BankStatementCSVParser {
         return new BankTransaction(date, amount, description);
     }
 
-    public List<BankTransaction> parseLinesFromCSV(List<String> lines) {
+    @Override
+    public List<BankTransaction> parseLinesFrom(List<String> lines) {
         return lines.stream()
-                .map(this::parserFromCSV)
+                .map(this::parseFrom)
                 .collect(toList());
     }
 }
