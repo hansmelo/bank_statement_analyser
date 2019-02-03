@@ -2,7 +2,6 @@ package com.monsterend.analyzer;
 
 
 import com.monsterend.domain.BankTransaction;
-import com.monsterend.parser.BankStatementCSVParser;
 import com.monsterend.parser.BankStatementParser;
 import com.monsterend.processor.BankStatementProcessor;
 
@@ -42,17 +41,13 @@ public class BankTransactionAnalyzer {
                 + bankStatementProcessor.calculateTotalForCategory("Salary"));
 
         System.out.println("The transactions of February and equal or bigger than 1_000 "
-                + bankStatementProcessor.findTransaction(bankTransaction ->
-                bankTransaction.getDate().getMonth() == Month.FEBRUARY &&
-                bankTransaction.getAmount() >= 1_000));
+                + bankStatementProcessor.findTransactionsEqualOrGreatherThanAndMonth(1_000, Month.FEBRUARY));
 
         System.out.println("non-February transactions "
-                + bankStatementProcessor.findTransaction(bankTransaction ->
-                bankTransaction.getDate().getMonth() != Month.FEBRUARY));
+                + bankStatementProcessor.findTransactionsNonMonth(Month.FEBRUARY));
 
         System.out.println("The outcomes "
-                + bankStatementProcessor.findTransaction(bankTransaction ->
-                bankTransaction.getAmount() < 0));
+                + bankStatementProcessor.findTransactionsLesserThan(0));
     }
 
 }

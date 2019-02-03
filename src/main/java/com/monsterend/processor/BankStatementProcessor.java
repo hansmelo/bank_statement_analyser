@@ -1,11 +1,8 @@
 package com.monsterend.processor;
 
 import com.monsterend.domain.BankTransaction;
-
 import java.time.Month;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import static java.util.stream.Collectors.toList;
 
 public class BankStatementProcessor {
@@ -17,26 +14,39 @@ public class BankStatementProcessor {
     }
 
     public double calculateTotalAmount() {
-        return bankTransactions.stream()
-                .mapToDouble(BankTransaction::getAmount)
-                .sum();
+        return summarizeTransactions(BankTransaction::getAmount);
     }
 
     public double calculateTotalInMonth(Month month) {
-        return bankTransactions.stream()
-                .filter(bankTransaction -> month.equals(bankTransaction.getDate().getMonth()))
-                .mapToDouble(BankTransaction::getAmount)
-                .sum();
+        return summarizeTransactions(bankTransaction ->
+                month.equals(bankTransaction.getDate().getMonth()) ? bankTransaction.getAmount() : 0);
     }
 
     public double calculateTotalForCategory(String category) {
+        return summarizeTransactions(bankTransaction ->
+                category.equals(bankTransaction.getDescription()) ? bankTransaction.getAmount() : 0);
+    }
+
+    public List<BankTransaction> findTransactionsLesserThan(int amount) {
+        return findTransaction(bankTransaction -> bankTransaction.getAmount() < amount);
+    }
+
+    public List<BankTransaction> findTransactionsEqualOrGreatherThanAndMonth(int amount, Month month) {
+        return findTransaction(bankTransaction -> month.equals(bankTransaction.getDate().getMonth()) && bankTransaction.getAmount() >= amount);
+    }
+
+
+    public List<BankTransaction> findTransactionsNonMonth( Month month) {
+        return findTransaction(bankTransaction -> !month.equals(bankTransaction.getDate().getMonth()));
+    }
+
+    private double summarizeTransactions(BankTransactionSummarizer bankTransactionSummarizer) {
         return bankTransactions.stream()
-                .filter(bankTransaction -> category.equals(bankTransaction.getDescription()))
-                .mapToDouble(BankTransaction::getAmount)
+                .mapToDouble(bankTransactionSummarizer::summarize)
                 .sum();
     }
 
-    public List<BankTransaction> findTransaction(BankTransactionFilter bankTransactionFilter) {
+    private List<BankTransaction> findTransaction(BankTransactionFilter bankTransactionFilter) {
         return bankTransactions.stream()
                 .filter(bankTransactionFilter::test)
                 .collect(toList());
