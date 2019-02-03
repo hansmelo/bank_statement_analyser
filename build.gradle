@@ -1,0 +1,17 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+group = 'com.iteratrlearning'
+version = '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.9
+targetCompatibility = 1.9
+
+mainClassName = "com.iteratrlearning.MainApplication"
+
+repositories {
+    maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    testCompile group: 'junit', name: 'junit', version:'4.12'
+}
