@@ -4,6 +4,9 @@ import com.monsterend.domain.BankTransaction;
 
 import java.time.Month;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class BankStatementProcessor {
 
@@ -31,5 +34,11 @@ public class BankStatementProcessor {
                 .filter(bankTransaction -> category.equals(bankTransaction.getDescription()))
                 .mapToDouble(BankTransaction::getAmount)
                 .sum();
+    }
+
+    public List<BankTransaction> findTransaction(BankTransactionFilter bankTransactionFilter) {
+        return bankTransactions.stream()
+                .filter(bankTransactionFilter::test)
+                .collect(toList());
     }
 }

@@ -40,6 +40,19 @@ public class BankTransactionAnalyzer {
 
         System.out.println("The total salary received is "
                 + bankStatementProcessor.calculateTotalForCategory("Salary"));
+
+        System.out.println("The transactions of February and equal or bigger than 1_000 "
+                + bankStatementProcessor.findTransaction(bankTransaction ->
+                bankTransaction.getDate().getMonth() == Month.FEBRUARY &&
+                bankTransaction.getAmount() >= 1_000));
+
+        System.out.println("non-February transactions "
+                + bankStatementProcessor.findTransaction(bankTransaction ->
+                bankTransaction.getDate().getMonth() != Month.FEBRUARY));
+
+        System.out.println("The outcomes "
+                + bankStatementProcessor.findTransaction(bankTransaction ->
+                bankTransaction.getAmount() < 0));
     }
 
 }
